@@ -1,0 +1,192 @@
+CCS PCH C Compiler, Version 4.132, 55358               14-10-18 13:30
+
+               Filename: C:\Users\Keisuke\Documents\Private\êßçÏï®\PIC_ParallelADconverter\PIC_ParallelADconverter.lst
+
+               ROM used: 486 bytes (6%)
+                         Largest free fragment is 7706
+               RAM used: 11 (2%) at main() level
+                         18 (4%) worst case
+               Stack:    1 locations
+
+*
+0000:  GOTO   00E0
+.................... #include <18f23k22.h> 
+.................... //////// Standard Header file for the PIC18F23K22 device //////////////// 
+.................... #device PIC18F23K22 
+.................... #list 
+....................  
+.................... #fuses INTRC, PUT, NOBROWNOUT, NOWDT, NOPROTECT, NOLVP, NOMCLR 
+.................... #device ADC=10 
+.................... #use delay(CLOCK = 64M) 
+.................... #use RS232(BAUD=19200,XMIT=PIN_C6,RCV=PIN_C7) 
+.................... #use fast_io(a) 
+.................... #use fast_io(b) 
+.................... #use fast_io(c) 
+....................  
+.................... const int analog_num = 2; 
+....................  
+.................... void main(void) 
+.................... { 
+00E0:  CLRF   FF8
+00E2:  BCF    FD0.7
+00E4:  CLRF   FEA
+00E6:  CLRF   FE9
+00E8:  MOVLW  70
+00EA:  MOVWF  FD3
+00EC:  BSF    F9B.6
+00EE:  BCF    F9B.7
+00F0:  BSF    FB8.3
+00F2:  MOVLW  40
+00F4:  MOVWF  FAF
+00F6:  MOVLW  03
+00F8:  MOVWF  FB0
+00FA:  MOVLW  A6
+00FC:  MOVWF  FAC
+00FE:  MOVLW  90
+0100:  MOVWF  FAB
+0102:  MOVF   FC1,W
+0104:  ANDLW  F0
+0106:  MOVWF  FC1
+0108:  MOVLW  00
+010A:  MOVLB  F
+010C:  MOVWF  x38
+010E:  MOVWF  x3C
+0110:  MOVWF  x39
+0112:  MOVWF  x3A
+0114:  MOVWF  x3B
+0116:  CLRF   F77
+0118:  CLRF   F78
+011A:  CLRF   F79
+.................... 	int i; 
+.................... 	unsigned long analog_value[2] = {0}; 
+011C:  CLRF   06
+011E:  CLRF   07
+0120:  CLRF   08
+0122:  CLRF   09
+.................... 	 
+.................... 	set_tris_a(0b10000111); 
+0124:  MOVLW  87
+0126:  MOVWF  F92
+.................... 	set_tris_b(0b10000000); 
+0128:  MOVLW  80
+012A:  MOVWF  F93
+.................... 	set_tris_c(0b10000000); 
+012C:  MOVWF  F94
+.................... 	 
+.................... 	setup_adc(ADC_CLOCK_INTERNAL); 
+012E:  MOVF   FC0,W
+0130:  ANDLW  C0
+0132:  IORLW  07
+0134:  MOVWF  FC0
+0136:  BSF    FC0.7
+0138:  BSF    FC2.0
+.................... 	// sAN0 :A0, sAN1 :A1 
+.................... 	setup_adc_ports(sAN0 | sAN1); 
+013A:  MOVF   FC1,W
+013C:  ANDLW  F0
+013E:  MOVWF  FC1
+0140:  MOVLW  03
+0142:  MOVWF  x38
+0144:  MOVLW  00
+0146:  MOVWF  x3C
+0148:  MOVWF  x39
+014A:  MOVWF  x3A
+014C:  MOVWF  x3B
+.................... 	setup_adc_ports(VSS_VDD); 
+014E:  MOVF   FC1,W
+0150:  ANDLW  F0
+0152:  MOVWF  FC1
+0154:  MOVLW  00
+0156:  MOVWF  x38
+0158:  MOVWF  x3C
+015A:  MOVWF  x39
+015C:  MOVWF  x3A
+015E:  MOVWF  x3B
+.................... 	 
+.................... 	setup_timer_0(T0_INTERNAL | T0_DIV_16); 
+0160:  MOVLW  83
+0162:  MOVWF  FD5
+.................... 	setup_timer_1(T1_INTERNAL | T1_DIV_BY_8); 
+0164:  MOVLW  37
+0166:  MOVWF  FCD
+0168:  CLRF   FCC
+.................... 	enable_interrupts(INT_TIMER0); 
+016A:  BSF    FF2.5
+.................... 	enable_interrupts(INT_TIMER1); 
+016C:  BSF    F9D.0
+.................... 	enable_interrupts(GLOBAL); 
+016E:  MOVLW  C0
+0170:  IORWF  FF2,F
+.................... 	 
+.................... 	while(1) 
+.................... 	{ 
+.................... 		for(i = 0; i < analog_num; i++) 
+0172:  CLRF   05
+0174:  MOVF   05,W
+0176:  SUBLW  01
+0178:  BNC   01AE
+.................... 		{ 
+.................... 			set_adc_channel(i); 
+017A:  RLCF   05,W
+017C:  MOVWF  00
+017E:  RLCF   00,F
+0180:  MOVLW  FC
+0182:  ANDWF  00,F
+0184:  MOVF   FC2,W
+0186:  ANDLW  83
+0188:  IORWF  00,W
+018A:  MOVWF  FC2
+.................... 			analog_value[i] = read_adc(); 
+018C:  BCF    FD8.0
+018E:  RLCF   05,W
+0190:  CLRF   03
+0192:  ADDLW  06
+0194:  MOVWF  FE9
+0196:  MOVLW  00
+0198:  ADDWFC 03,W
+019A:  MOVWF  FEA
+019C:  BSF    FC2.1
+019E:  BTFSC  FC2.1
+01A0:  BRA    019E
+01A2:  MOVFF  FC3,FEF
+01A6:  MOVFF  FC4,FEC
+.................... 		} 
+01AA:  INCF   05,F
+01AC:  BRA    0174
+.................... 		if(input(PIN_A2)) 
+01AE:  BTFSS  F80.2
+01B0:  BRA    01E2
+.................... 			printf("%ld,%ld\n", analog_value[0], analog_value[1]); 
+01B2:  MOVLW  10
+01B4:  MOVWF  FE9
+01B6:  MOVFF  07,0B
+01BA:  MOVFF  06,0A
+01BE:  MOVLB  0
+01C0:  RCALL  0004
+01C2:  MOVLW  2C
+01C4:  BTFSS  F9E.4
+01C6:  BRA    01C4
+01C8:  MOVWF  FAD
+01CA:  MOVLW  10
+01CC:  MOVWF  FE9
+01CE:  MOVFF  09,0B
+01D2:  MOVFF  08,0A
+01D6:  RCALL  0004
+01D8:  MOVLW  0A
+01DA:  BTFSS  F9E.4
+01DC:  BRA    01DA
+01DE:  MOVWF  FAD
+01E0:  MOVLB  F
+.................... 	} 
+01E2:  BRA    0172
+.................... } 
+01E4:  SLEEP 
+
+Configuration Fuses:
+   Word  1: F900   INTRC PLLEN PRIMARY FCMEN IESO
+   Word  2: 3C18   PUT NOBROWNOUT BORV19 NOWDT WDT32768
+   Word  3: 3F00   CCP2C1 PBADEN CCP3B5 HFOFST TIMER3C0 CCP2B5 NOMCLR
+   Word  4: 0081   STVREN NOLVP NOXINST NODEBUG
+   Word  5: C003   NOPROTECT NOCPB NOCPD
+   Word  6: E003   NOWRT NOWRTC NOWRTB NOWRTD
+   Word  7: 4003   NOEBTR NOEBTRB

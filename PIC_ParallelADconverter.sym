@@ -1,0 +1,81 @@
+000     @SCRATCH
+001     @SCRATCH
+001     _RETURN_
+002     @SCRATCH
+003     @SCRATCH
+005     main.i
+006-009 main.analog_value
+00A-00B @PRINTF_LD_19200_31766_31767.P1
+00A     main.@SCRATCH1
+00B     main.@SCRATCH2
+00C     @PRINTF_LD_19200_31766_31767.@SCRATCH1
+00D     @PRINTF_LD_19200_31766_31767.@SCRATCH2
+00E     @PRINTF_LD_19200_31766_31767.@SCRATCH3
+00F     @PRINTF_LD_19200_31766_31767.@SCRATCH4
+010     @PRINTF_LD_19200_31766_31767.@SCRATCH5
+011     @PRINTF_LD_19200_31766_31767.@SCRATCH6
+012     @PRINTF_LD_19200_31766_31767.@SCRATCH7
+F55     CCP_5_LOW
+F55     CCP_5
+F56     CCP_5_HIGH
+F58     CCP_4
+F58     CCP_4_LOW
+F59     CCP_4_HIGH
+F5E     CCP_3_LOW
+F5E     CCP_3
+F5F     CCP_3_HIGH
+F67     CCP_2
+F67     CCP_2_LOW
+F68     CCP_2_HIGH
+F78.6   C2OUT
+F79.6   C1OUT
+FBE     CCP_1
+FBE     CCP_1_LOW
+FBF     CCP_1_HIGH
+FE1-FE2 @WRITE_PACKED_MEMORY.P1
+FE1-FE2 @READ_PACKED_MEMORY.P2
+FE9-FEA @WRITE_PACKED_MEMORY.P1
+FE9-FEA @READ_PROGRAM_MEMORY.P2
+FE9-FEA @WRITE_PROGRAM_MEMORY.P3
+FE9-FEA @READ_PACKED_MEMORY.P4
+FF6-FF8 @READ_PROGRAM_MEMORY.P1
+FF6-FF8 @WRITE_PROGRAM_MEMORY.P2
+
+ROM Allocation:
+00E0  main
+0004  @PRINTF_LD_19200_31766_31767
+00E0  @cinit1
+011C  @cinit2
+
+
+User Memory space: 
+
+User Memory space: 
+
+Project Directory:
+    C:\Users\Keisuke\Documents\Private\êßçÏï®\PIC_ParallelADconverter\
+
+Project Files:
+    PIC_ParallelADconverter.c                               [14-10-18 13:30  CRC=B7E5B411]
+    ..\..\..\..\..\..\Program Files (x86)\PICC\devices\18f23k22.h [04-4-12 14:18  CRC=04BBF403]
+
+Source signature=C15D9C17
+
+Units:
+    PIC_ParallelADconverter (main)
+
+Compiler Settings:
+    Processor:      PIC18F23K22
+    Pointer Size:   16
+    ADC Range:      0-1023
+    Opt Level:      9
+    Short,Int,Long: UNSIGNED: 1,8,16
+    Float,Double:   32,32
+
+Output Files:
+    Errors:      PIC_ParallelADconverter.err
+    INHX32:      PIC_ParallelADconverter.hex
+    Symbols:     PIC_ParallelADconverter.sym
+    List:        PIC_ParallelADconverter.lst
+    Debug/eCOD:  PIC_ParallelADconverter.cod
+    Project:     PIC_ParallelADconverter.PJT
