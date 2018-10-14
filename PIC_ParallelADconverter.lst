@@ -1,186 +1,323 @@
-CCS PCH C Compiler, Version 4.132, 55358               14-10-18 13:30
+CCS PCH C Compiler, Version 4.132, 55358               14-10-18 15:20
 
                Filename: C:\Users\Keisuke\Documents\Private\制作物\PIC_ParallelADconverter\PIC_ParallelADconverter.lst
 
-               ROM used: 486 bytes (6%)
-                         Largest free fragment is 7706
-               RAM used: 11 (2%) at main() level
-                         18 (4%) worst case
+               ROM used: 546 bytes (7%)
+                         Largest free fragment is 7646
+               RAM used: 18 (4%) at main() level
+                         21 (4%) worst case
                Stack:    1 locations
 
 *
-0000:  GOTO   00E0
+0000:  GOTO   0072
 .................... #include <18f23k22.h> 
 .................... //////// Standard Header file for the PIC18F23K22 device //////////////// 
 .................... #device PIC18F23K22 
 .................... #list 
 ....................  
-.................... #fuses INTRC, PUT, NOBROWNOUT, NOWDT, NOPROTECT, NOLVP, NOMCLR 
 .................... #device ADC=10 
+.................... #fuses INTRC, PUT, NOBROWNOUT, NOWDT, NOPROTECT, NOLVP, NOMCLR 
 .................... #use delay(CLOCK = 64M) 
-.................... #use RS232(BAUD=19200,XMIT=PIN_C6,RCV=PIN_C7) 
+*
+0018:  CLRF   FEA
+001A:  MOVLW  12
+001C:  MOVWF  FE9
+001E:  MOVF   FEF,W
+0020:  BZ    003E
+0022:  MOVLW  14
+0024:  MOVWF  01
+0026:  CLRF   00
+0028:  DECFSZ 00,F
+002A:  BRA    0028
+002C:  DECFSZ 01,F
+002E:  BRA    0026
+0030:  MOVLW  BF
+0032:  MOVWF  00
+0034:  DECFSZ 00,F
+0036:  BRA    0034
+0038:  BRA    003A
+003A:  DECFSZ FEF,F
+003C:  BRA    0022
+003E:  GOTO   010A (RETURN)
 .................... #use fast_io(a) 
 .................... #use fast_io(b) 
 .................... #use fast_io(c) 
 ....................  
-.................... const int analog_num = 2; 
+.................... // アナログ入力ピン 
+.................... const int analog_num = 4; 
+.................... // highになるとアナログ値を10bit出力する 
+.................... const long input_flag  = PIN_A7; 
+.................... // 出力完了するとhigh 
+.................... const long output_flag = PIN_A6; 
+.................... // 要素番号のbit数 
+.................... const int element_pin_num = 2; 
+.................... // 要素番号を指定するピン 
+.................... const long element_pin[2] = {PIN_A4, PIN_A5}; 
 ....................  
 .................... void main(void) 
 .................... { 
-00E0:  CLRF   FF8
-00E2:  BCF    FD0.7
-00E4:  CLRF   FEA
-00E6:  CLRF   FE9
-00E8:  MOVLW  70
-00EA:  MOVWF  FD3
-00EC:  BSF    F9B.6
-00EE:  BCF    F9B.7
-00F0:  BSF    FB8.3
-00F2:  MOVLW  40
-00F4:  MOVWF  FAF
-00F6:  MOVLW  03
-00F8:  MOVWF  FB0
-00FA:  MOVLW  A6
-00FC:  MOVWF  FAC
-00FE:  MOVLW  90
-0100:  MOVWF  FAB
-0102:  MOVF   FC1,W
-0104:  ANDLW  F0
-0106:  MOVWF  FC1
-0108:  MOVLW  00
-010A:  MOVLB  F
-010C:  MOVWF  x38
-010E:  MOVWF  x3C
-0110:  MOVWF  x39
-0112:  MOVWF  x3A
-0114:  MOVWF  x3B
-0116:  CLRF   F77
-0118:  CLRF   F78
-011A:  CLRF   F79
-.................... 	int i; 
-.................... 	unsigned long analog_value[2] = {0}; 
-011C:  CLRF   06
-011E:  CLRF   07
-0120:  CLRF   08
-0122:  CLRF   09
+*
+0072:  CLRF   FF8
+0074:  BCF    FD0.7
+0076:  CLRF   FEA
+0078:  CLRF   FE9
+007A:  MOVLW  70
+007C:  MOVWF  FD3
+007E:  BSF    F9B.6
+0080:  BCF    F9B.7
+0082:  MOVF   FC1,W
+0084:  ANDLW  F0
+0086:  MOVWF  FC1
+0088:  MOVLW  00
+008A:  MOVLB  F
+008C:  MOVWF  x38
+008E:  MOVWF  x3C
+0090:  MOVWF  x39
+0092:  MOVWF  x3A
+0094:  MOVWF  x3B
+0096:  CLRF   F77
+0098:  CLRF   F78
+009A:  CLRF   F79
+009C:  BSF    05.0
+009E:  CLRF   06
+.................... 	// 立ち上がり・立ち下がり判定 
+.................... 	short flag = true; 
+.................... 	int element = 0; 
+.................... 	// ループカウンタ 
+.................... 	int i, pin; 
+.................... 	// アナログ値格納 
+.................... 	unsigned long analog_value[analog_num] = {0}; 
+00A0:  CLRF   09
+00A2:  CLRF   0A
+00A4:  CLRF   0B
+00A6:  CLRF   0C
+00A8:  CLRF   0D
+00AA:  CLRF   0E
+00AC:  CLRF   0F
+00AE:  CLRF   10
 .................... 	 
-.................... 	set_tris_a(0b10000111); 
-0124:  MOVLW  87
-0126:  MOVWF  F92
-.................... 	set_tris_b(0b10000000); 
-0128:  MOVLW  80
-012A:  MOVWF  F93
-.................... 	set_tris_c(0b10000000); 
-012C:  MOVWF  F94
+.................... 	set_tris_a(0b10111111); 
+00B0:  MOVLW  BF
+00B2:  MOVWF  F92
+.................... 	set_tris_b(0b00000000); 
+00B4:  MOVLW  00
+00B6:  MOVWF  F93
+.................... 	set_tris_c(0b00000000); 
+00B8:  MOVWF  F94
 .................... 	 
 .................... 	setup_adc(ADC_CLOCK_INTERNAL); 
-012E:  MOVF   FC0,W
-0130:  ANDLW  C0
-0132:  IORLW  07
-0134:  MOVWF  FC0
-0136:  BSF    FC0.7
-0138:  BSF    FC2.0
-.................... 	// sAN0 :A0, sAN1 :A1 
-.................... 	setup_adc_ports(sAN0 | sAN1); 
-013A:  MOVF   FC1,W
-013C:  ANDLW  F0
-013E:  MOVWF  FC1
-0140:  MOVLW  03
-0142:  MOVWF  x38
-0144:  MOVLW  00
-0146:  MOVWF  x3C
-0148:  MOVWF  x39
-014A:  MOVWF  x3A
-014C:  MOVWF  x3B
+00BA:  MOVF   FC0,W
+00BC:  ANDLW  C0
+00BE:  IORLW  07
+00C0:  MOVWF  FC0
+00C2:  BSF    FC0.7
+00C4:  BSF    FC2.0
+.................... 	// sAN0 :A0, sAN1 :A1, sAN2 :A2, sAN3 :A3 
+.................... 	setup_adc_ports(sAN0 | sAN1 | sAN2 | sAN3); 
+00C6:  MOVF   FC1,W
+00C8:  ANDLW  F0
+00CA:  MOVWF  FC1
+00CC:  MOVLW  0F
+00CE:  MOVWF  x38
+00D0:  MOVLW  00
+00D2:  MOVWF  x3C
+00D4:  MOVWF  x39
+00D6:  MOVWF  x3A
+00D8:  MOVWF  x3B
 .................... 	setup_adc_ports(VSS_VDD); 
-014E:  MOVF   FC1,W
-0150:  ANDLW  F0
-0152:  MOVWF  FC1
-0154:  MOVLW  00
-0156:  MOVWF  x38
-0158:  MOVWF  x3C
-015A:  MOVWF  x39
-015C:  MOVWF  x3A
-015E:  MOVWF  x3B
+00DA:  MOVF   FC1,W
+00DC:  ANDLW  F0
+00DE:  MOVWF  FC1
+00E0:  MOVLW  00
+00E2:  MOVWF  x38
+00E4:  MOVWF  x3C
+00E6:  MOVWF  x39
+00E8:  MOVWF  x3A
+00EA:  MOVWF  x3B
 .................... 	 
 .................... 	setup_timer_0(T0_INTERNAL | T0_DIV_16); 
-0160:  MOVLW  83
-0162:  MOVWF  FD5
+00EC:  MOVLW  83
+00EE:  MOVWF  FD5
 .................... 	setup_timer_1(T1_INTERNAL | T1_DIV_BY_8); 
-0164:  MOVLW  37
-0166:  MOVWF  FCD
-0168:  CLRF   FCC
+00F0:  MOVLW  37
+00F2:  MOVWF  FCD
+00F4:  CLRF   FCC
 .................... 	enable_interrupts(INT_TIMER0); 
-016A:  BSF    FF2.5
+00F6:  BSF    FF2.5
 .................... 	enable_interrupts(INT_TIMER1); 
-016C:  BSF    F9D.0
+00F8:  BSF    F9D.0
 .................... 	enable_interrupts(GLOBAL); 
-016E:  MOVLW  C0
-0170:  IORWF  FF2,F
+00FA:  MOVLW  C0
+00FC:  IORWF  FF2,F
+.................... 	 
+.................... 	delay_ms(2000); 
+00FE:  MOVLW  08
+0100:  MOVWF  11
+0102:  MOVLW  FA
+0104:  MOVWF  12
+0106:  MOVLB  0
+0108:  BRA    0018
+010A:  DECFSZ 11,F
+010C:  BRA    0110
+010E:  BRA    0114
+0110:  MOVLB  F
+0112:  BRA    0102
 .................... 	 
 .................... 	while(1) 
 .................... 	{ 
 .................... 		for(i = 0; i < analog_num; i++) 
-0172:  CLRF   05
-0174:  MOVF   05,W
-0176:  SUBLW  01
-0178:  BNC   01AE
+0114:  CLRF   07
+0116:  MOVF   07,W
+0118:  SUBLW  03
+011A:  BTFSS  FD8.0
+011C:  BRA    021E
 .................... 		{ 
 .................... 			set_adc_channel(i); 
-017A:  RLCF   05,W
-017C:  MOVWF  00
-017E:  RLCF   00,F
-0180:  MOVLW  FC
-0182:  ANDWF  00,F
-0184:  MOVF   FC2,W
-0186:  ANDLW  83
-0188:  IORWF  00,W
-018A:  MOVWF  FC2
+011E:  RLCF   07,W
+0120:  MOVWF  00
+0122:  RLCF   00,F
+0124:  MOVLW  FC
+0126:  ANDWF  00,F
+0128:  MOVF   FC2,W
+012A:  ANDLW  83
+012C:  IORWF  00,W
+012E:  MOVWF  FC2
 .................... 			analog_value[i] = read_adc(); 
-018C:  BCF    FD8.0
-018E:  RLCF   05,W
-0190:  CLRF   03
-0192:  ADDLW  06
-0194:  MOVWF  FE9
-0196:  MOVLW  00
-0198:  ADDWFC 03,W
-019A:  MOVWF  FEA
-019C:  BSF    FC2.1
-019E:  BTFSC  FC2.1
-01A0:  BRA    019E
-01A2:  MOVFF  FC3,FEF
-01A6:  MOVFF  FC4,FEC
+0130:  BCF    FD8.0
+0132:  RLCF   07,W
+0134:  CLRF   03
+0136:  ADDLW  09
+0138:  MOVWF  FE9
+013A:  MOVLW  00
+013C:  ADDWFC 03,W
+013E:  MOVWF  FEA
+0140:  BSF    FC2.1
+0142:  BTFSC  FC2.1
+0144:  BRA    0142
+0146:  MOVFF  FC3,FEF
+014A:  MOVFF  FC4,FEC
+.................... 			 
+.................... 			if(input(input_flag) && flag) 
+014E:  BTFSS  F80.7
+0150:  BRA    020E
+0152:  BTFSS  05.0
+0154:  BRA    020E
+.................... 			{ 
+.................... 				// 要素番号の取得 
+.................... 				for(pin = 0, element = 0; pin < element_pin_num; pin++) 
+0156:  CLRF   08
+0158:  CLRF   06
+015A:  MOVF   08,W
+015C:  SUBLW  01
+015E:  BNC   019E
+.................... 					element |= input(element_pin[pin]) << pin; 
+0160:  BCF    FD8.0
+0162:  RLCF   08,W
+0164:  CLRF   03
+0166:  RCALL  0004
+0168:  TBLRD*+
+016A:  MOVFF  FF5,03
+016E:  MOVWF  11
+0170:  MOVFF  03,12
+0174:  MOVWF  13
+0176:  MOVLW  0F
+0178:  MOVWF  15
+017A:  MOVLW  80
+017C:  MOVWF  14
+017E:  BRA    0042
+0180:  MOVLW  00
+0182:  BTFSC  01.0
+0184:  MOVLW  01
+0186:  MOVWF  00
+0188:  MOVF   08,W
+018A:  MOVWF  01
+018C:  BZ    0196
+018E:  BCF    FD8.0
+0190:  RLCF   00,F
+0192:  DECFSZ 01,F
+0194:  BRA    018E
+0196:  MOVF   00,W
+0198:  IORWF  06,F
+019A:  INCF   08,F
+019C:  BRA    015A
+.................... 				// 10bitで出力 
+.................... 				output_b(0xff & (analog_value[element] >> 2)); 
+019E:  BCF    FD8.0
+01A0:  RLCF   06,W
+01A2:  CLRF   03
+01A4:  ADDLW  09
+01A6:  MOVWF  FE9
+01A8:  MOVLW  00
+01AA:  ADDWFC 03,W
+01AC:  MOVWF  FEA
+01AE:  MOVFF  FEC,12
+01B2:  MOVF   FED,F
+01B4:  MOVFF  FEF,11
+01B8:  RRCF   12,W
+01BA:  MOVWF  03
+01BC:  RRCF   11,W
+01BE:  MOVWF  02
+01C0:  RRCF   03,F
+01C2:  RRCF   02,F
+01C4:  MOVLW  3F
+01C6:  ANDWF  03,F
+01C8:  CLRF   12
+01CA:  MOVFF  02,F8A
+.................... 				output_c(analog_value[element] << (8-2)); 
+01CE:  BCF    FD8.0
+01D0:  RLCF   06,W
+01D2:  CLRF   03
+01D4:  ADDLW  09
+01D6:  MOVWF  FE9
+01D8:  MOVLW  00
+01DA:  ADDWFC 03,W
+01DC:  MOVWF  FEA
+01DE:  MOVFF  FEC,12
+01E2:  MOVF   FED,F
+01E4:  MOVFF  FEF,11
+01E8:  RLCF   11,F
+01EA:  RLCF   12,F
+01EC:  RLCF   11,F
+01EE:  RLCF   12,F
+01F0:  RLCF   11,F
+01F2:  RLCF   12,F
+01F4:  RLCF   11,F
+01F6:  RLCF   12,F
+01F8:  RLCF   11,F
+01FA:  RLCF   12,F
+01FC:  RLCF   11,F
+01FE:  RLCF   12,F
+0200:  MOVLW  C0
+0202:  ANDWF  11,F
+0204:  MOVFF  11,F8B
+.................... 				// 出力完了フラグ 
+.................... 				output_high(output_flag); 
+0208:  BSF    F89.6
+.................... 				// 立ち下がるまでfalse 
+.................... 				flag = false; 
+020A:  BCF    05.0
+.................... 			} 
+.................... 			else if(!input(input_flag) && !flag) 
+020C:  BRA    021A
+020E:  BTFSC  F80.7
+0210:  BRA    021A
+0212:  BTFSC  05.0
+0214:  BRA    021A
+.................... 			{ 
+.................... 				// 出力完了フラグのリセット 
+.................... 				output_low(output_flag); 
+0216:  BCF    F89.6
+.................... 				// 立ち上がるまでtrue 
+.................... 				flag = true; 
+0218:  BSF    05.0
+.................... 			} 
 .................... 		} 
-01AA:  INCF   05,F
-01AC:  BRA    0174
-.................... 		if(input(PIN_A2)) 
-01AE:  BTFSS  F80.2
-01B0:  BRA    01E2
-.................... 			printf("%ld,%ld\n", analog_value[0], analog_value[1]); 
-01B2:  MOVLW  10
-01B4:  MOVWF  FE9
-01B6:  MOVFF  07,0B
-01BA:  MOVFF  06,0A
-01BE:  MOVLB  0
-01C0:  RCALL  0004
-01C2:  MOVLW  2C
-01C4:  BTFSS  F9E.4
-01C6:  BRA    01C4
-01C8:  MOVWF  FAD
-01CA:  MOVLW  10
-01CC:  MOVWF  FE9
-01CE:  MOVFF  09,0B
-01D2:  MOVFF  08,0A
-01D6:  RCALL  0004
-01D8:  MOVLW  0A
-01DA:  BTFSS  F9E.4
-01DC:  BRA    01DA
-01DE:  MOVWF  FAD
-01E0:  MOVLB  F
+021A:  INCF   07,F
+021C:  BRA    0116
 .................... 	} 
-01E2:  BRA    0172
+021E:  BRA    0114
 .................... } 
-01E4:  SLEEP 
+0220:  SLEEP 
 
 Configuration Fuses:
    Word  1: F900   INTRC PLLEN PRIMARY FCMEN IESO
