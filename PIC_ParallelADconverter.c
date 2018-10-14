@@ -6,25 +6,25 @@
 #use fast_io(b)
 #use fast_io(c)
 
-// ƒAƒiƒƒO“ü—Íƒsƒ“
+// ã‚¢ãƒŠãƒ­ã‚°å…¥åŠ›ãƒ”ãƒ³
 const int analog_num = 4;
-// high‚É‚È‚é‚ÆƒAƒiƒƒO’l‚ğ10bito—Í‚·‚é
+// highã«ãªã‚‹ã¨ã‚¢ãƒŠãƒ­ã‚°å€¤ã‚’10bitå‡ºåŠ›ã™ã‚‹
 const long input_flag  = PIN_A7;
-// o—ÍŠ®—¹‚·‚é‚Æhigh
+// å‡ºåŠ›å®Œäº†ã™ã‚‹ã¨high
 const long output_flag = PIN_A6;
-// —v‘f”Ô†‚Ìbit”
+// è¦ç´ ç•ªå·ã®bitæ•°
 const int element_pin_num = 2;
-// —v‘f”Ô†‚ğw’è‚·‚éƒsƒ“
+// è¦ç´ ç•ªå·ã‚’æŒ‡å®šã™ã‚‹ãƒ”ãƒ³
 const long element_pin[2] = {PIN_A4, PIN_A5};
 
 void main(void)
 {
-	// —§‚¿ã‚ª‚èE—§‚¿‰º‚ª‚è”»’è
+	// ç«‹ã¡ä¸ŠãŒã‚Šãƒ»ç«‹ã¡ä¸‹ãŒã‚Šåˆ¤å®š
 	short flag = true;
 	int element = 0;
-	// ƒ‹[ƒvƒJƒEƒ“ƒ^
+	// ãƒ«ãƒ¼ãƒ—ã‚«ã‚¦ãƒ³ã‚¿
 	int i, pin;
-	// ƒAƒiƒƒO’lŠi”[
+	// ã‚¢ãƒŠãƒ­ã‚°å€¤æ ¼ç´
 	unsigned long analog_value[analog_num] = {0};
 	
 	set_tris_a(0b10111111);
@@ -53,22 +53,22 @@ void main(void)
 			
 			if(input(input_flag) && flag)
 			{
-				// —v‘f”Ô†‚Ìæ“¾
+				// è¦ç´ ç•ªå·ã®å–å¾—
 				for(pin = 0, element = 0; pin < element_pin_num; pin++)
 					element |= input(element_pin[pin]) << pin;
-				// 10bit‚Åo—Í
+				// 10bitã§å‡ºåŠ›
 				output_b(0xff & (analog_value[element] >> 2));
 				output_c(analog_value[element] << (8-2));
-				// o—ÍŠ®—¹ƒtƒ‰ƒO
+				// å‡ºåŠ›å®Œäº†ãƒ•ãƒ©ã‚°
 				output_high(output_flag);
-				// —§‚¿‰º‚ª‚é‚Ü‚Åfalse
+				// ç«‹ã¡ä¸‹ãŒã‚‹ã¾ã§false
 				flag = false;
 			}
 			else if(!input(input_flag) && !flag)
 			{
-				// o—ÍŠ®—¹ƒtƒ‰ƒO‚ÌƒŠƒZƒbƒg
+				// å‡ºåŠ›å®Œäº†ãƒ•ãƒ©ã‚°ã®ãƒªã‚»ãƒƒãƒˆ
 				output_low(output_flag);
-				// —§‚¿ã‚ª‚é‚Ü‚Åtrue
+				// ç«‹ã¡ä¸ŠãŒã‚‹ã¾ã§true
 				flag = true;
 			}
 		}
